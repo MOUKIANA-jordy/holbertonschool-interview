@@ -11,4 +11,3 @@ def minOperations(n):
             n //= facteur
         facteur += 1
     return operations
-
