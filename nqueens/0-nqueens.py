@@ -16,7 +16,7 @@ Attributes:
 """
 from sys import argv
 
-if len(argv) is not 2:
+if len(argv) != 2:
     print('Usage: nqueens N')
     exit(1)
 
