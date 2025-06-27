@@ -1,6 +1,7 @@
 #include "binary_trees.h"
 #include <stdlib.h>
 
+
 /**
  * create_node - Creates a new AVL node
  * @parent: Parent node
@@ -21,6 +22,7 @@ avl_t *create_node(avl_t *parent, int value)
 
     return (node);
 }
+
 
 /**
  * build_avl - Recursively builds AVL tree from sorted array
@@ -48,6 +50,7 @@ avl_t *build_avl(int *array, int start, int end, avl_t *parent)
 
     return (root);
 }
+
 
 /**
  * sorted_array_to_avl - Converts a sorted array to an AVL tree
