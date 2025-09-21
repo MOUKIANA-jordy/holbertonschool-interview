@@ -57,9 +57,9 @@ void merge_sort_rec(int *array, size_t left, size_t right, int *buffer)
 	if (left >= right)
 		return;
 
-	mid = (left + right) / 2;
+	/* Correction : sous-tableau gauche ≤ sous-tableau droit */
+	mid = left + (right - left - 1) / 2;
 
-	/* Toujours trier le sous-tableau gauche en premier */
 	merge_sort_rec(array, left, mid, buffer);
 	merge_sort_rec(array, mid + 1, right, buffer);
 
