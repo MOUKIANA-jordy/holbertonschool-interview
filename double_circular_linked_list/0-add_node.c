@@ -2,10 +2,10 @@
 #include "list.h"
 
 /**
- * copy_string - Creates a copy of a string
+ * copy_string - Copies a string
  * @str: String to copy
  *
- * Return: Pointer to the copied string, or NULL on failure
+ * Return: Pointer to the copy, or NULL on failure
  */
 static char *copy_string(char *str)
 {
@@ -60,7 +60,7 @@ static List *create_node(char *str)
 }
 
 /**
- * add_node_end - Adds a node to the end of a circular doubly linked list
+ * add_node_end - Adds a node to the end of the list
  * @list: Double pointer to the beginning of the list
  * @str: String to copy into the new node
  *
@@ -87,7 +87,6 @@ List *add_node_end(List **list, char *str)
 	}
 
 	last = (*list)->prev;
-
 	new->prev = last;
 	new->next = *list;
 	last->next = new;
@@ -97,7 +96,7 @@ List *add_node_end(List **list, char *str)
 }
 
 /**
- * add_node_begin - Adds a node to the beginning of a circular doubly linked list
+ * add_node_begin - Adds a node to the beginning of the list
  * @list: Double pointer to the beginning of the list
  * @str: String to copy into the new node
  *
@@ -124,7 +123,6 @@ List *add_node_begin(List **list, char *str)
 	}
 
 	last = (*list)->prev;
-
 	new->next = *list;
 	new->prev = last;
 	last->next = new;
