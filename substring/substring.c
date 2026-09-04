@@ -25,19 +25,6 @@ static int word_matches(const char *first, const char *second,
 }
 
 /**
- * reset_used - Resets an array of used words
- * @used: Array to reset
- * @size: Number of elements in the array
- */
-static void reset_used(int *used, int size)
-{
-	int index;
-
-	for (index = 0; index < size; index++)
-		used[index] = 0;
-}
-
-/**
  * valid_substring - Checks a possible substring
  * @start: Beginning of the substring
  * @words: Array of words to find
@@ -54,7 +41,8 @@ static int valid_substring(const char *start, const char **words,
 	int word;
 	int found;
 
-	reset_used(used, nb_words);
+	for (word = 0; word < nb_words; word++)
+		used[word] = 0;
 
 	for (position = 0; position < nb_words; position++)
 	{
@@ -114,6 +102,38 @@ static int valid_arguments(const char *s, const char **words,
 }
 
 /**
+ * collect_indices - Collects the valid starting indices
+ * @s: String to scan
+ * @words: Array of words
+ * @nb_words: Number of words
+ * @word_length: Length of each word
+ * @possible: Number of possible starting positions
+ * @indices: Array in which to store the indices
+ * @used: Array tracking the words already used
+ *
+ * Return: Number of indices found
+ */
+static int collect_indices(const char *s, const char **words,
+			   int nb_words, size_t word_length,
+			   size_t possible, int *indices, int *used)
+{
+	size_t index;
+	int count = 0;
+
+	for (index = 0; index < possible; index++)
+	{
+		if (valid_substring(s + index, words, nb_words,
+				    word_length, used))
+		{
+			indices[count] = (int)index;
+			count++;
+		}
+	}
+
+	return (count);
+}
+
+/**
  * find_substring - Finds concatenations of a list of words
  * @s: String to scan
  * @words: Array of words to concatenate
@@ -125,29 +145,22 @@ static int valid_arguments(const char *s, const char **words,
 int *find_substring(char const *s, char const **words,
 		    int nb_words, int *n)
 {
-	size_t string_length;
-	size_t word_length;
-	size_t substring_length;
-	size_t possible;
-	size_t index;
-	int *indices;
-	int *used;
+	size_t str_len, word_len, total_len, possible;
+	int *indices, *used;
 
 	if (n == NULL)
 		return (NULL);
 
 	*n = 0;
-
-	if (!valid_arguments(s, words, nb_words, &word_length))
+	if (!valid_arguments(s, words, nb_words, &word_len))
 		return (NULL);
 
-	string_length = strlen(s);
-	substring_length = word_length * nb_words;
-
-	if (substring_length > string_length)
+	str_len = strlen(s);
+	total_len = word_len * nb_words;
+	if (total_len > str_len)
 		return (NULL);
 
-	possible = string_length - substring_length + 1;
+	possible = str_len - total_len + 1;
 	indices = malloc(sizeof(*indices) * possible);
 	if (indices == NULL)
 		return (NULL);
@@ -159,16 +172,8 @@ int *find_substring(char const *s, char const **words,
 		return (NULL);
 	}
 
-	for (index = 0; index < possible; index++)
-	{
-		if (valid_substring(s + index, words, nb_words,
-				    word_length, used))
-		{
-			indices[*n] = (int)index;
-			(*n)++;
-		}
-	}
-
+	*n = collect_indices(s, words, nb_words, word_len,
+			     possible, indices, used);
 	free(used);
 
 	if (*n == 0)
